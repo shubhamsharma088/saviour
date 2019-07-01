@@ -3,21 +3,18 @@ package org.saviour.utils;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.saviour.model.Coordinate;
 import org.saviour.model.Enemy;
+import org.saviour.model.HPShip;
+import org.saviour.model.Torpedo;
 
 public class SaviourUtils {
 
-  public static String getFileInputString(String path) throws IOException {
-    return FileUtils.getFileAsString(path);
-  }
-
   public static List<Enemy> scanDataForEnemies(char data[][], char[][] pattern,
-      double desiredAccuracy) {
+      double desiredAccuracy, String enemyType) {
 
     List<Enemy> enemyEntities = new ArrayList<>();
     Enemy entity;
@@ -26,7 +23,7 @@ public class SaviourUtils {
 
     for (int row = 0; row < rowSize; row++) {
       for (int col = 0; col < colSize; col++) {
-        entity = populateEnemies(data, pattern, row, col, desiredAccuracy);
+        entity = populateEnemies(data, pattern, row, col, desiredAccuracy, enemyType);
         if (null != entity) {
           entity.setEndCoordinates(new Coordinate(row + pattern.length, col + pattern[0].length));
           enemyEntities.add(entity);
@@ -42,14 +39,22 @@ public class SaviourUtils {
 
   private static Enemy populateEnemies(char[][] data, char[][] pattern, int startRow,
       int startColumn,
-      double desiredAccuracy) {
+      double desiredAccuracy, String enemyType) {
     Enemy entity = null;
     double accuracy = percentMatch(data, pattern, startRow, startColumn);
 
     if (accuracy >= desiredAccuracy) {
-      entity = new Enemy();
-      entity.setStartCoordinates(new Coordinate(startRow, startColumn));
-      entity.setAccuracy(accuracy);
+
+      switch (enemyType) {
+        case SAVIOURCONSTANT.HPSHIP:
+          entity = new HPShip(new Coordinate(startRow, startColumn), accuracy);
+          break;
+        case SAVIOURCONSTANT.TORPEDO:
+          entity = new Torpedo(new Coordinate(startRow, startColumn), accuracy);
+          break;
+        default:
+          entity = new Enemy(new Coordinate(startRow, startColumn), accuracy, enemyType);
+      }
     }
     return entity;
   }

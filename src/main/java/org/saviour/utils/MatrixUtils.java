@@ -46,7 +46,7 @@ public class MatrixUtils {
 
     for (int row = rowStartIndex; row < rowEndIndex; row++) {
       for (int col = colStartIndex; col < colEndIndex; col++) {
-        System.out.println(matrix[row][col]);
+        System.out.print(matrix[row][col]);
       }
       System.out.println();
     }
