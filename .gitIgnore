@@ -2,3 +2,7 @@
 .gradle/
 org.eclipse.*
 .project
+.classpath
+
+bin/
+build/
